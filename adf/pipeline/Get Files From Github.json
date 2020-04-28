@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Copy data1",
+				"name": "Get confirmed_US",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -15,8 +15,24 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "HttpReadSettings",
+							"requestMethod": "GET"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
 					"enableStaging": false
-				}
+				},
+				"inputs": [
+					{
+						"referenceName": "gitbhub_confirmed_US",
+						"type": "DatasetReference"
+					}
+				]
 			}
 		],
 		"annotations": []
