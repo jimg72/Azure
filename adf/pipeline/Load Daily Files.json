@@ -374,29 +374,6 @@
 						"type": "DatasetReference"
 					}
 				]
-			},
-			{
-				"name": "Web1",
-				"type": "WebActivity",
-				"dependsOn": [],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"url": "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_US.csv",
-					"method": "GET",
-					"linkedServices": [
-						{
-							"referenceName": "ADSLGen2",
-							"type": "LinkedServiceReference"
-						}
-					]
-				}
 			}
 		],
 		"annotations": []
