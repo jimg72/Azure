@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Get confirmed_US",
+				"name": "GET confirmed_US",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
