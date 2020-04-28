@@ -1,5 +1,5 @@
 {
-	"name": "dataflow1",
+	"name": "Unpivot Confirmed US",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
