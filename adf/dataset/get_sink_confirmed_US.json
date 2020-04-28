@@ -1,5 +1,5 @@
 {
-	"name": "adsl_confirmed_US",
+	"name": "get_sink_confirmed_US",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "ADSLGen2",
