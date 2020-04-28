@@ -1,5 +1,5 @@
 {
-	"name": "gitbhub_confirmed_US",
+	"name": "get_source_confirmed_US",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "http_time_series_covid19_confirmed_US",
