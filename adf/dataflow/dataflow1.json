@@ -1,0 +1,20 @@
+{
+	"name": "dataflow1",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "adsl_source_confirmed_US",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [],
+			"transformations": [],
+			"script": "source(output(\n\t\tUID as string,\n\t\tiso2 as string,\n\t\tiso3 as string,\n\t\tcode3 as string,\n\t\tFIPS as string,\n\t\tAdmin2 as string,\n\t\tProvince_State as string,\n\t\tCountry_Region as string,\n\t\tLat as string,\n\t\tLong_ as string,\n\t\tCombined_Key as string,\n\t\t{1/22/20} as string,\n\t\t{1/23/20} as string,\n\t\t{1/24/20} as string,\n\t\t{1/25/20} as string,\n\t\t{1/26/20} as string,\n\t\t{1/27/20} as string,\n\t\t{1/28/20} as string,\n\t\t{1/29/20} as string,\n\t\t{1/30/20} as string,\n\t\t{1/31/20} as string,\n\t\t{2/1/20} as string,\n\t\t{2/2/20} as string,\n\t\t{2/3/20} as string,\n\t\t{2/4/20} as string,\n\t\t{2/5/20} as string,\n\t\t{2/6/20} as string,\n\t\t{2/7/20} as string,\n\t\t{2/8/20} as string,\n\t\t{2/9/20} as string,\n\t\t{2/10/20} as string,\n\t\t{2/11/20} as string,\n\t\t{2/12/20} as string,\n\t\t{2/13/20} as string,\n\t\t{2/14/20} as string,\n\t\t{2/15/20} as string,\n\t\t{2/16/20} as string,\n\t\t{2/17/20} as string,\n\t\t{2/18/20} as string,\n\t\t{2/19/20} as string,\n\t\t{2/20/20} as string,\n\t\t{2/21/20} as string,\n\t\t{2/22/20} as string,\n\t\t{2/23/20} as string,\n\t\t{2/24/20} as string,\n\t\t{2/25/20} as string,\n\t\t{2/26/20} as string,\n\t\t{2/27/20} as string,\n\t\t{2/28/20} as string,\n\t\t{2/29/20} as string,\n\t\t{3/1/20} as string,\n\t\t{3/2/20} as string,\n\t\t{3/3/20} as string,\n\t\t{3/4/20} as string,\n\t\t{3/5/20} as string,\n\t\t{3/6/20} as string,\n\t\t{3/7/20} as string,\n\t\t{3/8/20} as string,\n\t\t{3/9/20} as string,\n\t\t{3/10/20} as string,\n\t\t{3/11/20} as string,\n\t\t{3/12/20} as string,\n\t\t{3/13/20} as string,\n\t\t{3/14/20} as string,\n\t\t{3/15/20} as string,\n\t\t{3/16/20} as string,\n\t\t{3/17/20} as string,\n\t\t{3/18/20} as string,\n\t\t{3/19/20} as string,\n\t\t{3/20/20} as string,\n\t\t{3/21/20} as string,\n\t\t{3/22/20} as string,\n\t\t{3/23/20} as string,\n\t\t{3/24/20} as string,\n\t\t{3/25/20} as string,\n\t\t{3/26/20} as string,\n\t\t{3/27/20} as string,\n\t\t{3/28/20} as string,\n\t\t{3/29/20} as string,\n\t\t{3/30/20} as string,\n\t\t{3/31/20} as string,\n\t\t{4/1/20} as string,\n\t\t{4/2/20} as string,\n\t\t{4/3/20} as string,\n\t\t{4/4/20} as string,\n\t\t{4/5/20} as string,\n\t\t{4/6/20} as string,\n\t\t{4/7/20} as string,\n\t\t{4/8/20} as string,\n\t\t{4/9/20} as string,\n\t\t{4/10/20} as string,\n\t\t{4/11/20} as string,\n\t\t{4/12/20} as string,\n\t\t{4/13/20} as string,\n\t\t{4/14/20} as string,\n\t\t{4/15/20} as string,\n\t\t{4/16/20} as string,\n\t\t{4/17/20} as string,\n\t\t{4/18/20} as string,\n\t\t{4/19/20} as string,\n\t\t{4/20/20} as string,\n\t\t{4/21/20} as string,\n\t\t{4/22/20} as string,\n\t\t{4/23/20} as string,\n\t\t{4/24/20} as string,\n\t\t{4/25/20} as string,\n\t\t{4/26/20} as string,\n\t\t{4/27/20} as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false) ~> source1"
+		}
+	}
+}
