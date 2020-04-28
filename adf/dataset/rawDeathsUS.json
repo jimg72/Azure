@@ -1,0 +1,82 @@
+{
+	"name": "rawDeathsUS",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Azure SQL Database",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "UID",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "ISO2",
+				"type": "nvarchar"
+			},
+			{
+				"name": "ISO3",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CODE3",
+				"type": "nvarchar"
+			},
+			{
+				"name": "FIPS",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ADMIN2",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PROVINCE_STATE",
+				"type": "nvarchar"
+			},
+			{
+				"name": "COUNTRY_REGION",
+				"type": "nvarchar"
+			},
+			{
+				"name": "LAT",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "LONG_",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "COMBINED_KEY",
+				"type": "nvarchar"
+			},
+			{
+				"name": "POPULATION",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "DAY_DATE",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "DEATH_COUNT",
+				"type": "int",
+				"precision": 10
+			}
+		],
+		"typeProperties": {
+			"schema": "covid",
+			"table": "rawDeathsUS"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

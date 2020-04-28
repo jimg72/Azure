@@ -1,0 +1,382 @@
+{
+	"name": "Load Daily Files",
+	"properties": {
+		"activities": [
+			{
+				"name": "Load US Confirmed",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"preCopyScript": "TRUNCATE TABLE covid.rawConfirmedUS",
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "UID",
+									"type": "String"
+								},
+								"sink": {
+									"name": "UID",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "iso2",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ISO2",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "iso3",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ISO3",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "code3",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CODE3",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "FIPS",
+									"type": "String"
+								},
+								"sink": {
+									"name": "FIPS",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Admin2",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ADMIN2",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Province_State",
+									"type": "String"
+								},
+								"sink": {
+									"name": "PROVINCE_STATE",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Country_Region",
+									"type": "String"
+								},
+								"sink": {
+									"name": "COUNTRY_REGION",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Lat",
+									"type": "String"
+								},
+								"sink": {
+									"name": "LAT",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Long_",
+									"type": "String"
+								},
+								"sink": {
+									"name": "LONG_",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Combined_Key",
+									"type": "String"
+								},
+								"sink": {
+									"name": "COMBINED_KEY",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "day_date",
+									"type": "String"
+								},
+								"sink": {
+									"name": "DAY_DATE",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "confirmed_count",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CONFIRMED_COUNT",
+									"type": "Int32"
+								}
+							}
+						]
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "confirmed_US_melt",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "rawConfirmedUS",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "Load US Deaths",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Load US Confirmed",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"preCopyScript": "TRUNCATE TABLE covid.rawDeathsUS",
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "UID",
+									"type": "String"
+								},
+								"sink": {
+									"name": "UID",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "iso2",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ISO2",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "iso3",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ISO3",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "code3",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CODE3",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "FIPS",
+									"type": "String"
+								},
+								"sink": {
+									"name": "FIPS",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Admin2",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ADMIN2",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Province_State",
+									"type": "String"
+								},
+								"sink": {
+									"name": "PROVINCE_STATE",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Country_Region",
+									"type": "String"
+								},
+								"sink": {
+									"name": "COUNTRY_REGION",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Lat",
+									"type": "String"
+								},
+								"sink": {
+									"name": "LAT",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Long_",
+									"type": "String"
+								},
+								"sink": {
+									"name": "LONG_",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Combined_Key",
+									"type": "String"
+								},
+								"sink": {
+									"name": "COMBINED_KEY",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Population",
+									"type": "String"
+								},
+								"sink": {
+									"name": "POPULATION",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"name": "day_date",
+									"type": "String"
+								},
+								"sink": {
+									"name": "DAY_DATE",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "deaths_count",
+									"type": "String"
+								},
+								"sink": {
+									"name": "DEATHS_COUNT",
+									"type": "Int32"
+								}
+							}
+						]
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "deaths_US_melt",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "rawDeathsUS",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"annotations": []
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}
