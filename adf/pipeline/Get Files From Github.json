@@ -40,13 +40,13 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "gitbhub_confirmed_US",
+						"referenceName": "get_source_confirmed_US",
 						"type": "DatasetReference"
 					}
 				],
 				"outputs": [
 					{
-						"referenceName": "adsl_confirmed_US",
+						"referenceName": "get_sink_confirmed_US",
 						"type": "DatasetReference"
 					}
 				]
