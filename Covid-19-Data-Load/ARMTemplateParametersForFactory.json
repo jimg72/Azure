@@ -1,0 +1,21 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "Covid-19-Data-Load"
+		},
+		"ADSLGen2_accountKey": {
+			"value": ""
+		},
+		"Azure SQL Database_connectionString": {
+			"value": ""
+		},
+		"ADSLGen2_properties_typeProperties_url": {
+			"value": "https://jgrahamadsl.dfs.core.windows.net"
+		},
+		"HttpServer1_properties_typeProperties_url": {
+			"value": "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_US.csv"
+		}
+	}
+}

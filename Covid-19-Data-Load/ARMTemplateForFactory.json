@@ -1,0 +1,1262 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "Covid-19-Data-Load"
+		},
+		"ADSLGen2_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'ADSLGen2'"
+		},
+		"Azure SQL Database_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'Azure SQL Database'"
+		},
+		"ADSLGen2_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://jgrahamadsl.dfs.core.windows.net"
+		},
+		"HttpServer1_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_US.csv"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/Load Daily Files')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Load US Confirmed",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"preCopyScript": "TRUNCATE TABLE covid.rawConfirmedUS",
+								"disableMetricsCollection": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "UID",
+											"type": "String"
+										},
+										"sink": {
+											"name": "UID",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "iso2",
+											"type": "String"
+										},
+										"sink": {
+											"name": "ISO2",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "iso3",
+											"type": "String"
+										},
+										"sink": {
+											"name": "ISO3",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "code3",
+											"type": "String"
+										},
+										"sink": {
+											"name": "CODE3",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "FIPS",
+											"type": "String"
+										},
+										"sink": {
+											"name": "FIPS",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Admin2",
+											"type": "String"
+										},
+										"sink": {
+											"name": "ADMIN2",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Province_State",
+											"type": "String"
+										},
+										"sink": {
+											"name": "PROVINCE_STATE",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Country_Region",
+											"type": "String"
+										},
+										"sink": {
+											"name": "COUNTRY_REGION",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Lat",
+											"type": "String"
+										},
+										"sink": {
+											"name": "LAT",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Long_",
+											"type": "String"
+										},
+										"sink": {
+											"name": "LONG_",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Combined_Key",
+											"type": "String"
+										},
+										"sink": {
+											"name": "COMBINED_KEY",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "day_date",
+											"type": "String"
+										},
+										"sink": {
+											"name": "DAY_DATE",
+											"type": "DateTime"
+										}
+									},
+									{
+										"source": {
+											"name": "confirmed_count",
+											"type": "String"
+										},
+										"sink": {
+											"name": "CONFIRMED_COUNT",
+											"type": "Int32"
+										}
+									}
+								]
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "confirmed_US_melt",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "rawConfirmedUS",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Load US Deaths",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Load US Confirmed",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"preCopyScript": "TRUNCATE TABLE covid.rawDeathsUS",
+								"disableMetricsCollection": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "UID",
+											"type": "String"
+										},
+										"sink": {
+											"name": "UID",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "iso2",
+											"type": "String"
+										},
+										"sink": {
+											"name": "ISO2",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "iso3",
+											"type": "String"
+										},
+										"sink": {
+											"name": "ISO3",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "code3",
+											"type": "String"
+										},
+										"sink": {
+											"name": "CODE3",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "FIPS",
+											"type": "String"
+										},
+										"sink": {
+											"name": "FIPS",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Admin2",
+											"type": "String"
+										},
+										"sink": {
+											"name": "ADMIN2",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Province_State",
+											"type": "String"
+										},
+										"sink": {
+											"name": "PROVINCE_STATE",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Country_Region",
+											"type": "String"
+										},
+										"sink": {
+											"name": "COUNTRY_REGION",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Lat",
+											"type": "String"
+										},
+										"sink": {
+											"name": "LAT",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Long_",
+											"type": "String"
+										},
+										"sink": {
+											"name": "LONG_",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Combined_Key",
+											"type": "String"
+										},
+										"sink": {
+											"name": "COMBINED_KEY",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Population",
+											"type": "String"
+										},
+										"sink": {
+											"name": "POPULATION",
+											"type": "Int32"
+										}
+									},
+									{
+										"source": {
+											"name": "day_date",
+											"type": "String"
+										},
+										"sink": {
+											"name": "DAY_DATE",
+											"type": "DateTime"
+										}
+									},
+									{
+										"source": {
+											"name": "deaths_count",
+											"type": "String"
+										},
+										"sink": {
+											"name": "DEATHS_COUNT",
+											"type": "Int32"
+										}
+									}
+								]
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "deaths_US_melt",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "rawDeathsUS",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/confirmed_US_melt')]",
+				"[concat(variables('factoryId'), '/datasets/rawConfirmedUS')]",
+				"[concat(variables('factoryId'), '/datasets/deaths_US_melt')]",
+				"[concat(variables('factoryId'), '/datasets/rawDeathsUS')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/confirmed_US_melt')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ADSLGen2",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "time_series_covid19_confirmed_US_melt.csv",
+						"fileSystem": "covid-19"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "UID",
+						"type": "String"
+					},
+					{
+						"name": "iso2",
+						"type": "String"
+					},
+					{
+						"name": "iso3",
+						"type": "String"
+					},
+					{
+						"name": "code3",
+						"type": "String"
+					},
+					{
+						"name": "FIPS",
+						"type": "String"
+					},
+					{
+						"name": "Admin2",
+						"type": "String"
+					},
+					{
+						"name": "Province_State",
+						"type": "String"
+					},
+					{
+						"name": "Country_Region",
+						"type": "String"
+					},
+					{
+						"name": "Lat",
+						"type": "String"
+					},
+					{
+						"name": "Long_",
+						"type": "String"
+					},
+					{
+						"name": "Combined_Key",
+						"type": "String"
+					},
+					{
+						"name": "day_date",
+						"type": "String"
+					},
+					{
+						"name": "confirmed_count",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ADSLGen2')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/deaths_US_melt')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ADSLGen2",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "time_series_covid19_deaths_US_melt.csv",
+						"fileSystem": "covid-19"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "UID",
+						"type": "String"
+					},
+					{
+						"name": "iso2",
+						"type": "String"
+					},
+					{
+						"name": "iso3",
+						"type": "String"
+					},
+					{
+						"name": "code3",
+						"type": "String"
+					},
+					{
+						"name": "FIPS",
+						"type": "String"
+					},
+					{
+						"name": "Admin2",
+						"type": "String"
+					},
+					{
+						"name": "Province_State",
+						"type": "String"
+					},
+					{
+						"name": "Country_Region",
+						"type": "String"
+					},
+					{
+						"name": "Lat",
+						"type": "String"
+					},
+					{
+						"name": "Long_",
+						"type": "String"
+					},
+					{
+						"name": "Combined_Key",
+						"type": "String"
+					},
+					{
+						"name": "Population",
+						"type": "String"
+					},
+					{
+						"name": "day_date",
+						"type": "String"
+					},
+					{
+						"name": "deaths_count",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ADSLGen2')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/rawConfirmedUS')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Azure SQL Database",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "UID",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "ISO2",
+						"type": "nvarchar"
+					},
+					{
+						"name": "ISO3",
+						"type": "nvarchar"
+					},
+					{
+						"name": "CODE3",
+						"type": "nvarchar"
+					},
+					{
+						"name": "FIPS",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ADMIN2",
+						"type": "nvarchar"
+					},
+					{
+						"name": "PROVINCE_STATE",
+						"type": "nvarchar"
+					},
+					{
+						"name": "COUNTRY_REGION",
+						"type": "nvarchar"
+					},
+					{
+						"name": "LAT",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "LONG_",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "COMBINED_KEY",
+						"type": "nvarchar"
+					},
+					{
+						"name": "DAY_DATE",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "CONFIRMED_COUNT",
+						"type": "int",
+						"precision": 10
+					}
+				],
+				"typeProperties": {
+					"schema": "covid",
+					"table": "rawConfirmedUS"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/Azure SQL Database')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/rawDeathsUS')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Azure SQL Database",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "UID",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "ISO2",
+						"type": "nvarchar"
+					},
+					{
+						"name": "ISO3",
+						"type": "nvarchar"
+					},
+					{
+						"name": "CODE3",
+						"type": "nvarchar"
+					},
+					{
+						"name": "FIPS",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ADMIN2",
+						"type": "nvarchar"
+					},
+					{
+						"name": "PROVINCE_STATE",
+						"type": "nvarchar"
+					},
+					{
+						"name": "COUNTRY_REGION",
+						"type": "nvarchar"
+					},
+					{
+						"name": "LAT",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "LONG_",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "COMBINED_KEY",
+						"type": "nvarchar"
+					},
+					{
+						"name": "POPULATION",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "DAY_DATE",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "DEATH_COUNT",
+						"type": "int",
+						"precision": 10
+					}
+				],
+				"typeProperties": {
+					"schema": "covid",
+					"table": "rawDeathsUS"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/Azure SQL Database')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ADSLGen2')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('ADSLGen2_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('ADSLGen2_accountKey')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Azure SQL Database')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"connectionString": "[parameters('Azure SQL Database_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/HttpServer1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "HttpServer",
+				"typeProperties": {
+					"url": "[parameters('HttpServer1_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Anonymous"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DelimitedText1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "HttpServer1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "HttpServerLocation"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "UID",
+						"type": "String"
+					},
+					{
+						"name": "iso2",
+						"type": "String"
+					},
+					{
+						"name": "iso3",
+						"type": "String"
+					},
+					{
+						"name": "code3",
+						"type": "String"
+					},
+					{
+						"name": "FIPS",
+						"type": "String"
+					},
+					{
+						"name": "Admin2",
+						"type": "String"
+					},
+					{
+						"name": "Province_State",
+						"type": "String"
+					},
+					{
+						"name": "Country_Region",
+						"type": "String"
+					},
+					{
+						"name": "Lat",
+						"type": "String"
+					},
+					{
+						"name": "Long_",
+						"type": "String"
+					},
+					{
+						"name": "Combined_Key",
+						"type": "String"
+					},
+					{
+						"name": "1/22/20",
+						"type": "String"
+					},
+					{
+						"name": "1/23/20",
+						"type": "String"
+					},
+					{
+						"name": "1/24/20",
+						"type": "String"
+					},
+					{
+						"name": "1/25/20",
+						"type": "String"
+					},
+					{
+						"name": "1/26/20",
+						"type": "String"
+					},
+					{
+						"name": "1/27/20",
+						"type": "String"
+					},
+					{
+						"name": "1/28/20",
+						"type": "String"
+					},
+					{
+						"name": "1/29/20",
+						"type": "String"
+					},
+					{
+						"name": "1/30/20",
+						"type": "String"
+					},
+					{
+						"name": "1/31/20",
+						"type": "String"
+					},
+					{
+						"name": "2/1/20",
+						"type": "String"
+					},
+					{
+						"name": "2/2/20",
+						"type": "String"
+					},
+					{
+						"name": "2/3/20",
+						"type": "String"
+					},
+					{
+						"name": "2/4/20",
+						"type": "String"
+					},
+					{
+						"name": "2/5/20",
+						"type": "String"
+					},
+					{
+						"name": "2/6/20",
+						"type": "String"
+					},
+					{
+						"name": "2/7/20",
+						"type": "String"
+					},
+					{
+						"name": "2/8/20",
+						"type": "String"
+					},
+					{
+						"name": "2/9/20",
+						"type": "String"
+					},
+					{
+						"name": "2/10/20",
+						"type": "String"
+					},
+					{
+						"name": "2/11/20",
+						"type": "String"
+					},
+					{
+						"name": "2/12/20",
+						"type": "String"
+					},
+					{
+						"name": "2/13/20",
+						"type": "String"
+					},
+					{
+						"name": "2/14/20",
+						"type": "String"
+					},
+					{
+						"name": "2/15/20",
+						"type": "String"
+					},
+					{
+						"name": "2/16/20",
+						"type": "String"
+					},
+					{
+						"name": "2/17/20",
+						"type": "String"
+					},
+					{
+						"name": "2/18/20",
+						"type": "String"
+					},
+					{
+						"name": "2/19/20",
+						"type": "String"
+					},
+					{
+						"name": "2/20/20",
+						"type": "String"
+					},
+					{
+						"name": "2/21/20",
+						"type": "String"
+					},
+					{
+						"name": "2/22/20",
+						"type": "String"
+					},
+					{
+						"name": "2/23/20",
+						"type": "String"
+					},
+					{
+						"name": "2/24/20",
+						"type": "String"
+					},
+					{
+						"name": "2/25/20",
+						"type": "String"
+					},
+					{
+						"name": "2/26/20",
+						"type": "String"
+					},
+					{
+						"name": "2/27/20",
+						"type": "String"
+					},
+					{
+						"name": "2/28/20",
+						"type": "String"
+					},
+					{
+						"name": "2/29/20",
+						"type": "String"
+					},
+					{
+						"name": "3/1/20",
+						"type": "String"
+					},
+					{
+						"name": "3/2/20",
+						"type": "String"
+					},
+					{
+						"name": "3/3/20",
+						"type": "String"
+					},
+					{
+						"name": "3/4/20",
+						"type": "String"
+					},
+					{
+						"name": "3/5/20",
+						"type": "String"
+					},
+					{
+						"name": "3/6/20",
+						"type": "String"
+					},
+					{
+						"name": "3/7/20",
+						"type": "String"
+					},
+					{
+						"name": "3/8/20",
+						"type": "String"
+					},
+					{
+						"name": "3/9/20",
+						"type": "String"
+					},
+					{
+						"name": "3/10/20",
+						"type": "String"
+					},
+					{
+						"name": "3/11/20",
+						"type": "String"
+					},
+					{
+						"name": "3/12/20",
+						"type": "String"
+					},
+					{
+						"name": "3/13/20",
+						"type": "String"
+					},
+					{
+						"name": "3/14/20",
+						"type": "String"
+					},
+					{
+						"name": "3/15/20",
+						"type": "String"
+					},
+					{
+						"name": "3/16/20",
+						"type": "String"
+					},
+					{
+						"name": "3/17/20",
+						"type": "String"
+					},
+					{
+						"name": "3/18/20",
+						"type": "String"
+					},
+					{
+						"name": "3/19/20",
+						"type": "String"
+					},
+					{
+						"name": "3/20/20",
+						"type": "String"
+					},
+					{
+						"name": "3/21/20",
+						"type": "String"
+					},
+					{
+						"name": "3/22/20",
+						"type": "String"
+					},
+					{
+						"name": "3/23/20",
+						"type": "String"
+					},
+					{
+						"name": "3/24/20",
+						"type": "String"
+					},
+					{
+						"name": "3/25/20",
+						"type": "String"
+					},
+					{
+						"name": "3/26/20",
+						"type": "String"
+					},
+					{
+						"name": "3/27/20",
+						"type": "String"
+					},
+					{
+						"name": "3/28/20",
+						"type": "String"
+					},
+					{
+						"name": "3/29/20",
+						"type": "String"
+					},
+					{
+						"name": "3/30/20",
+						"type": "String"
+					},
+					{
+						"name": "3/31/20",
+						"type": "String"
+					},
+					{
+						"name": "4/1/20",
+						"type": "String"
+					},
+					{
+						"name": "4/2/20",
+						"type": "String"
+					},
+					{
+						"name": "4/3/20",
+						"type": "String"
+					},
+					{
+						"name": "4/4/20",
+						"type": "String"
+					},
+					{
+						"name": "4/5/20",
+						"type": "String"
+					},
+					{
+						"name": "4/6/20",
+						"type": "String"
+					},
+					{
+						"name": "4/7/20",
+						"type": "String"
+					},
+					{
+						"name": "4/8/20",
+						"type": "String"
+					},
+					{
+						"name": "4/9/20",
+						"type": "String"
+					},
+					{
+						"name": "4/10/20",
+						"type": "String"
+					},
+					{
+						"name": "4/11/20",
+						"type": "String"
+					},
+					{
+						"name": "4/12/20",
+						"type": "String"
+					},
+					{
+						"name": "4/13/20",
+						"type": "String"
+					},
+					{
+						"name": "4/14/20",
+						"type": "String"
+					},
+					{
+						"name": "4/15/20",
+						"type": "String"
+					},
+					{
+						"name": "4/16/20",
+						"type": "String"
+					},
+					{
+						"name": "4/17/20",
+						"type": "String"
+					},
+					{
+						"name": "4/18/20",
+						"type": "String"
+					},
+					{
+						"name": "4/19/20",
+						"type": "String"
+					},
+					{
+						"name": "4/20/20",
+						"type": "String"
+					},
+					{
+						"name": "4/21/20",
+						"type": "String"
+					},
+					{
+						"name": "4/22/20",
+						"type": "String"
+					},
+					{
+						"name": "4/23/20",
+						"type": "String"
+					},
+					{
+						"name": "4/24/20",
+						"type": "String"
+					},
+					{
+						"name": "4/25/20",
+						"type": "String"
+					},
+					{
+						"name": "4/26/20",
+						"type": "String"
+					},
+					{
+						"name": "4/27/20",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/HttpServer1')]"
+			]
+		}
+	]
+}
